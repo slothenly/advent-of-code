@@ -28,8 +28,11 @@ namespace day1
             }
 
             int currentCalibration = CheckCalibration(baseInput);
+            int firstDoubles = GetFirstDoubledFreq(baseInput);
 
-            Console.WriteLine("Current Calibration Levels: " + currentCalibration);
+            Console.WriteLine("Current Calibration: \n" + currentCalibration);
+            Console.WriteLine();
+            Console.WriteLine("First Doubled Frequency: \n" + firstDoubles);
             Console.ReadLine();
         }
 
@@ -39,38 +42,48 @@ namespace day1
         /// <param name="baseInput"></param>
         private static int CheckCalibration(List<string> baseInput)
         {
-            // Parse out each line and add it to the integer 'current'
             int current = 0;
-            foreach (string input in baseInput)
+            List<int> inputList = baseInput.Select(x => int.Parse(x)).ToList();
+            foreach (int input in inputList)
             {
-                char[] inputChars = input.ToCharArray();
-                char sign = inputChars[0];
-                char[] inputValueChars = new char[inputChars.Length - 1];
-
-                // Add all but the first character to a char array
-                for (int i = 1; i < inputChars.Length; i++)
-                {
-                    inputValueChars[i - 1] = inputChars[i];
-                }
-
-                // Parse the number and return it into an integero
-                int inputValue;
-                string inputValueString = new string(inputValueChars);
-                int.TryParse(inputValueString, out inputValue);
-
-                // Actually calculate the end value
-                if (inputChars[0] == '+')
-                {
-                    current += inputValue;
-                }
-                else
-                {
-                    current -= inputValue;
-                }
+                current += input;
             }
 
             // Return out the resulting number
             return current;
+        }
+
+        /// <summary>
+        /// Gets the first doubled frquency from a given string input
+        /// </summary>
+        /// <param name="baseInput"></param>
+        /// <returns></returns>
+        private static int GetFirstDoubledFreq(List<string> baseInput)
+        {
+            // Parse out each line and add it to the integer 'current'
+            int current = 0;
+            Dictionary<int, bool> frequencies = new Dictionary<int, bool>();
+            List<int> inputList = baseInput.Select(x => int.Parse(x)).ToList();
+
+            while (true)
+            {
+                foreach (int input in inputList)
+                {
+                    current += input;
+
+                    // If a frequency is already in frequencies, return it
+                    if (frequencies.ContainsKey(current))
+                    {
+                        return current;
+                    }
+                    else
+                    {
+                        int newFreq = current;
+                        frequencies.Add(newFreq, true);
+                        //Console.WriteLine(newFreq);           // Bugtesting
+                    }
+                }
+            }
         }
     }
 }
